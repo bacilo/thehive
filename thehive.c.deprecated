@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define STARTING_PIECES "QBBSSGGGAAA"
+
+#define NUMBER_OF_SIDES 6
+#define _L 0
+#define _R 1
+#define _TL 2
+#define _TR 3
+#define _BL 4
+#define _BR 5
+
+typedef struct _piece PIECE;
+typedef PIECE * PIECES;
+typedef PIECES * BOARD;
+
+struct _piece
+{
+	bool black;
+	char type;
+	// int side[6];
+	//pieces *side;
+};
+
+bool rmPiece(char* plr, char type){
+	char *occ = strchr(plr, type);
+	if(occ){
+		printf("removing piece %c, found in position %d\n", type, (occ-plr));
+		*occ = plr[strlen(plr)-1];
+		plr[strlen(plr)-1]='\0';
+		return true;
+	}
+	printf("piece %c not available\n", type);
+	return false;
+}
+
+void printPiece(char type){
+	printf("/ \\\n|%c|\n\\ /\n", type);
+}
+
+void printPieceStruct(piece*origin, piece* pce, int orientation){
+	if(!pce)
+		return;
+	switch(orientation){
+		case 0:
+			printf("t y\nl%cr\nb n\n", pce->type);
+			break;
+		case 1:
+			printf("t y\nl%cr\nb n\n", pce->type);
+			break;
+		case 2:
+			printf("t y\nl%cr\nb n\n", pce->type);
+			break;
+		case 3:
+			printf("t y\nl%cr\nb n\n", pce->type);
+			break;
+		case 4:
+			printf("t y\nl%cr\nb n\n", pce->type);
+			break;
+		case 5:
+			printf("t y\nl%cr\nb n\n", pce->type);
+	}
+	for(int i = 0; i < NUMBER_OF_SIDES; i++)
+		if(pce->side[i] != origin)
+			printPieceStruct(pce, pce->side[i], i);
+}
+
+piece* newPiece(char type, bool black){
+	piece* aux = (piece *) malloc(sizeof(piece));
+	aux->black = black;
+	aux->type = type;
+	// aux->side = (pieces *) malloc(sizeof(piece *) * NUMBER_OF_SIDES);
+	return aux;
+}
+
+// void attachPiece(piece *onboard, int link, piece *toadd){
+// 	onboard->side[link] = toadd;
+// 	//Could be any side from the new piece which is linked I guess...
+// 	toadd->side[link] = onboard;
+// }
+
+int main(){
+
+	char side_names[NUMBER_OF_SIDES] = {'l','r','t','y','b','n'};
+
+	char *p1 = (char*) malloc(sizeof(char) * strlen(STARTING_PIECES));
+	char *p2 = (char*) malloc(sizeof(char) * strlen(STARTING_PIECES));
+
+	piece * board = newPiece('Q', true);
+	attachPiece(board, _L, newPiece('A', false));
+	attachPiece(board, _R, newPiece('A', false));
+	attachPiece(board, _TL, newPiece('A', false));
+	attachPiece(board, _BL, newPiece('A', false));
+	attachPiece(board, _BR, newPiece('A', false));
+
+	attachPiece(board->side[_R], _TL, newPiece('B', false));
+	attachPiece(board->side[_R], _BL, newPiece('B', false));
+	attachPiece(board->side[_R], _BR, newPiece('B', false));
+
+	attachPiece(board->side[_R]->side[_BL], _TL, newPiece('A', false));
+	attachPiece(board->side[_R]->side[_BL], _BL, newPiece('A', false));
+	attachPiece(board->side[_R]->side[_BL], _BR, newPiece('A', false));
+
+	printPieceStruct(NULL, board, 0);
+
+	p1 = strcpy(p1, STARTING_PIECES);
+	p2 = strcpy(p1, STARTING_PIECES);
+
+	printf("%d\n", strlen(p1));
+    
+ //    printf("%c\n", *strchr(p1, 'S'));
+
+    printf("%s\n", p1);
+
+    rmPiece(p1, 'G');
+	printf("%d\n", strlen(p1));
+    rmPiece(p1, 'A');
+	printf("%d\n", strlen(p1));
+
+    printf("%s\n", p1);
+	printf("\E[33m"); // Set the foreground color to red
+	printPiece('B');
+	printf("\E[0m"); // Set the foreground color to red
+
+	// for(int i = 0; i < sizeof(p1); i++)
+	// 	printf("%c\n", (char) (*(p1+i)));
+
+}
