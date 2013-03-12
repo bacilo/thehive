@@ -12,6 +12,8 @@
 #define _BL 4
 #define _BR 5
 
+/* check it ou!! */
+
 typedef struct _piece PIECE;
 typedef PIECE * PIECES;
 typedef PIECES * BOARD;
